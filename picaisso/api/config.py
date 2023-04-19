@@ -61,7 +61,7 @@ class Settings(BaseSettings):
             raise ValueError(f"openssl_key must not be the default one, please verify the `config/api/.env` file.")
         return value
 
-    @validator("model_precision"):
+    @validator("model_precision")
     def model_precision_must_be_valid(cls, value: str):
         """Check that the model precision is valid."""
         if value not in ["fp16", "fp32"]:
