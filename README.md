@@ -1,6 +1,6 @@
 <div align="center">
   <h1>🎨 PicAIsso - Bring AI art to your life</h1>
-  <img src="img/logo.png" width="200" height="200" />
+  <img src="assets/logo.png" width="200" height="200" />
 </div>
 
 **PicAIsso** is an open-source StableDiffusion implementation for generating AI art using an API and a Discord Bot.
@@ -59,7 +59,7 @@ You should see the built image in your Docker images list, you can check it with
 ```bash
 docker images
 ```
-![picaisso-api](img/docker-images-api.png)
+![picaisso-api](assets/docker-images-api.png)
 
 2. Run the Docker container
 ```bash
@@ -82,7 +82,7 @@ Once the API is running, you can test it by going to `http://localhost:7680/` in
 
 You should see the landing page of the API.
 
-![landing-page-picaisso-api](img/api-landing-page.png)
+![landing-page-picaisso-api](assets/api-landing-page.png)
 
 Click on the `Docs` button to see the API documentation and test the `/generate` endpoint. Check the [Usage](##usage) section for more details.
 
@@ -111,7 +111,7 @@ If you successfully created the Discord bot application, you just need to invite
 
 Mine is live! 🎉
 
-![picaisso-bot](img/bot-online.png)
+![picaisso-bot](assets/bot-online.png)
 
 ## Usage
 
@@ -126,28 +126,28 @@ You can use the project in three different ways:
 For testing purposes, you can use the API documentation to generate images and validate everything is working 
 as expected. You can find the API documentation at `http://localhost:7680/docs` when the API is running.
 
-![api-docs-1](img/api-docs-1.png)
+![api-docs-1](assets/api-docs-1.png)
 
 1. Click on the `Authorize` button and enter your API key in the `Value` field.
 
-![api-docs-2](img/api-docs-2.png)
+![api-docs-2](assets/api-docs-2.png)
 
 2. Use the `generate` endpoint to generate an image.
 
 2.1. Click on the `Try it out` button.
 
-![api-docs-3](img/api-docs-3.png)
+![api-docs-3](assets/api-docs-3.png)
 
 2.2. Enter the parameters you want to use to generate the image.
 
-![api-docs-4](img/api-docs-4.png)
+![api-docs-4](assets/api-docs-4.png)
 
 * _prompt: any text you want to use to generate the image._
 * _author: the name of the author of the image. Used for s3 storage only, you can let string._
 
 2.3. Enter the `Execute` button and wait for the image to be generated.
 
-![api-docs-5](img/api-docs-5.png)
+![api-docs-5](assets/api-docs-5.png)
 
 You can download the image by right-clicking on the image and selecting `Save image as...`.
 
@@ -167,15 +167,15 @@ You can use the Discord bot to generate images in your Discord server.
 
 3. Enter the prompt you want to use to generate the image.
 
-![discord-bot-1](img/bot-usage-1.png)
+![discord-bot-1](assets/bot-usage-1.png)
 
 4. The bot will tell you the job is in progress and will send you the image when it's done.
 
-![discord-bot-2](img/bot-usage-2.png)
+![discord-bot-2](assets/bot-usage-2.png)
 
 Enjoy the result! 🎉
 
-![discord-bot-3](img/bot-usage-3.png)
+![discord-bot-3](assets/bot-usage-3.png)
 
 ---
 
