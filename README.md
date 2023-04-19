@@ -42,6 +42,12 @@ There are two steps:
 
 **Warning:** Be sure to be in the root folder of the project before running the Docker commands.
 
+### Create the Docker network
+
+```bash
+docker network create picaisso
+```
+
 ### Deploy the API
 
 1. Build the Docker image
@@ -59,13 +65,46 @@ docker images
 ```bash
 docker run -d \
   --gpus all \
-  --name picaisso-api \
+  --network picaisso \
   -p 7680:7680 \
   -v ${HOME}/.cache:/root/.cache \
   --restart unless-stopped \
+  --name picaisso-api \
   picaisso-api:latest
 ```
 
+3. Test the API
+
+The API should be running on port `7680` of your machine. It can take a few minutes to start, because the model has
+to be downloaded and loaded on the first run. Because we are using the `${HOME}/.cache`folder as a mounted volume, the model will be downloaded only once and will be reused on the next runs.
+
+Once the API is running, you can test it by going to `http://localhost:7680/` in your web browser.
+
+You should see the landing page of the API.
+
+![landing-page-picaisso-api](img/api-landing-page.png)
+
+Click on the `Docs` button to see the API documentation and test the `/generate` endpoint. Check the [Usage](##usage) section for more details.
+
+_Trouble shooting: use the `docker logs picaisso-api` command to see the logs of the container._
+
+### Deploy the Discord Bot
+
+1. Build the Docker image
+
+```bash
+docker build -t picaisso-bot:latest -f docker/bot/Dockerfile .
+```
+
+2. Run the Docker container
+
+```bash
+docker run -d \
+  --restart unless-stopped \
+  --network picaisso \
+  --name picaisso-bot \
+  picaisso-bot:latest
+```
 
 ## Usage
 
