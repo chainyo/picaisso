@@ -28,7 +28,8 @@ git clone https://github.com/chainyo/picaisso.git
 > Follow the `.env.template` comments.
 
 3. Create your own `.env` file for the Discord Bot and update the values with your own. 
-> Follow the `.env.template` comments. The Discord bot application is explained if you follow the link in the `.env.template` file.
+> Follow the `.env.template` comments.
+> The Discord bot application installation process is explained if you follow the link in the `.env.template` file.
 
 4. (Optional) If you want to store the generated images, there is a S3 bucket configuration in the `.env` file. 
 You can create your own S3 bucket and update the values with your own. Leave the values empty if you don't want to use S3.
@@ -81,7 +82,9 @@ Once the API is running, you can test it by going to `http://localhost:7680/` in
 
 You should see the landing page of the API.
 
-![landing-page-picaisso-api](img/api-landing-page.png)
+<div align="center">
+  <img src="img/api-landing-page.png" width="500" height="500" />
+</div>
 
 Click on the `Docs` button to see the API documentation and test the `/generate` endpoint. Check the [Usage](##usage) section for more details.
 
@@ -129,7 +132,9 @@ as expected. You can find the API documentation at `http://localhost:7680/docs` 
 
 1. Click on the `Authorize` button and enter your API key in the `Value` field.
 
-![api-docs-2](img/api-docs-2.png)
+<div align="center">
+  <img src="img/api-docs-2.png" width="400" height="600" />
+</div>
 
 2. Use the `generate` endpoint to generate an image.
 
