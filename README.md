@@ -8,4 +8,5 @@
 ---
 
 **PicAIsso** is an open-source StableDiffusion implementation for generating AI art using an API and a Discord Bot.
-Imagine self-hosting your own MidJourney Discord bot, but with a different name and a different art style.
+
+👉 _Imagine self-hosting your own MidJourney Discord bot, but with a different name and a different art style._
