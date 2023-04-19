@@ -42,6 +42,7 @@ async def startup_event():
 @app.get("/", tags=["status"])
 async def health_check():
     """Health check endpoint"""
+    split_description = settings.description.split(".")
     content = f"""
     <!DOCTYPE html>
     <html>
@@ -53,10 +54,12 @@ async def health_check():
         <div class="container mx-auto p-4">
             <h1 class="text-4xl font-medium">{settings.project_name}</h1>
             <p class="text-gray-600">Version: {settings.version}</p>
-            <p class="text-gray-600">{settings.description}</p>
-            <p class="mt-16 text-gray-500">Want access? Contact us: <a class="text-blue-400 text-underlined" href="mailto:t.chaigneau.tc@gmail.com?subject=Access">t.chaigneau.tc@gmail.com</a></p>
+            <p class="mt-2 text-gray-600">{split_description[0]}</p>
+            <p class="text-gray-600">{split_description[1]}</p>
+            <p class="mt-8 text-gray-500">Want access? Contact me: <a class="text-blue-400 text-underlined" href="mailto:t.chaigneau.tc@gmail.com?subject=Access">t.chaigneau.tc@gmail.com</a></p>
+            <p class="mt-8">👇</p>
             <a href="/docs">
-                <button class="mt-8 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Docs</button>
+                <button class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Docs</button>
             </a>
         </div>
     </body>
