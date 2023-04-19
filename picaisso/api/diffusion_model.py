@@ -17,14 +17,11 @@ torch.backends.cuda.matmul.allow_tf32 = True
 class DiffusionService():
     def __init__(self, model_name: str, dtype: str, n_steps: int, max_batch_size: int, max_wait: int):
         self.model = model_name
+        self.dtype = torch.float32 if dtype == "fp32" else torch.float16
         self.n_steps = n_steps
         self.max_batch_size = max_batch_size
         self.max_wait = max_wait
 
-        if dtype == "float16":
-            self.dtype = torch.float16
-        elif dtype == "float32":
-            self.dtype = torch.float32
         
         # Multi requests support
         self.queue = []
@@ -49,7 +46,7 @@ class DiffusionService():
     async def process_input(self, prompt: str) -> str:
         """Process the input and return the result."""
         our_task = {
-            "done_event": asyncio.Event(loop=asyncio.get_event_loop()),
+            "done_event": asyncio.Event(),
             "prompt": prompt,
             "time": asyncio.get_event_loop().time(),
         }
@@ -63,8 +60,8 @@ class DiffusionService():
     
     async def runner(self):
         """Process the queue."""
-        self.queue_lock = asyncio.Lock(loop=asyncio.get_event_loop())
-        self.needs_processing = asyncio.Event(loop=asyncio.get_event_loop())
+        self.queue_lock = asyncio.Lock()
+        self.needs_processing = asyncio.Event()
         while True:
             await self.needs_processing.wait()
             self.needs_processing.clear()
