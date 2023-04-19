@@ -115,4 +115,64 @@ Mine is live! 🎉
 
 ## Usage
 
-WIP...
+You can use the project in three different ways:
+
+- Use the API documentation to generate images _(Starter apprentice level 🤓, be better than that)_
+- Use the API endpoint to generate images _(Dev guru level 🧙‍♂️)_
+- Use the Discord bot to generate images _(Discord bro level 🤙)_
+
+### API documentation
+
+For testing purposes, you can use the API documentation to generate images and validate everything is working 
+as expected. You can find the API documentation at `http://localhost:7680/docs` when the API is running.
+
+![api-docs-1](img/api-docs-1.png)
+
+1. Click on the `Authorize` button and enter your API key in the `Value` field.
+
+![api-docs-2](img/api-docs-2.png)
+
+2. Use the `generate` endpoint to generate an image.
+
+2.1. Click on the `Try it out` button.
+
+![api-docs-3](img/api-docs-3.png)
+
+2.2. Enter the parameters you want to use to generate the image.
+
+![api-docs-4](img/api-docs-4.png)
+
+* _prompt: any text you want to use to generate the image._
+* _author: the name of the author of the image. Used for s3 storage only, you can let string._
+
+2.3. Enter the `Execute` button and wait for the image to be generated.
+
+![api-docs-5](img/api-docs-5.png)
+
+You can download the image by right-clicking on the image and selecting `Save image as...`.
+
+### API endpoint
+
+You can use the API endpoint to generate images in your own application.
+
+You can use the same logic used by the Discord bot to generate images. You can find the code in the `bot.py` file.
+
+### Discord bot
+
+You can use the Discord bot to generate images in your Discord server.
+
+1. Start by typing `/art` in any channel of your Discord server.
+
+2. The bot will ask you to enter the prompt you want to use to generate the image.
+
+3. Enter the prompt you want to use to generate the image.
+
+![discord-bot-1](img/bot-usage-1.png)
+
+4. The bot will tell you the job is in progress and will send you the image when it's done.
+
+![discord-bot-2](img/bot-usage-2.png)
+
+Enjoy the result! 🎉
+
+![discord-bot-3](img/bot-usage-3.png)
