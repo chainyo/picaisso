@@ -3,9 +3,9 @@
 from os import getenv
 from dotenv import load_dotenv
 from loguru import logger
-from typing import Optional
+from typing import Optional, Union
 
-from pydantic import BaseSettings, field, validator
+from pydantic import BaseSettings, Field, validator
 
 
 class Settings(BaseSettings):
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     algorithm: str
     # Model Configuration
     max_batch_size: int
-    max_wait: int
+    max_wait: float
     model_name: str
     model_precision: str
     n_steps: int
@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     region_name: Optional[str] = None
     access_key_id: Optional[str] = None
     secret_access_key: Optional[str] = None
-    _using_s3: bool = field(init=False)
+    _using_s3: bool = Field(init=False)
 
     @validator("username", "password", "openssl_key", "algorithm")
     def authentication_parameters_must_not_be_none(cls, value: str, field: str):
@@ -41,7 +41,7 @@ class Settings(BaseSettings):
         return value
 
     @validator("max_batch_size", "max_wait", "n_steps")
-    def model_parameters_must_be_positive(cls, value: int, field: str):
+    def model_parameters_must_be_positive(cls, value: Union[int, float], field: str):
         """Check that the model parameters are positive."""
         if value <= 0:
             raise ValueError(f"{field.name} must be positive.")
