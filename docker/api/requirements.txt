@@ -1,0 +1,11 @@
+accelerate>=0.15
+aiohttp>=3.8
+aiobotocore>=2.4
+diffusers[torch]>=0.11
+fastapi[all]>=0.88
+loguru>=0.6
+pydantic>=1.8
+python-dotenv>=0.21
+python-jose>=3.3
+python-multipart>=0.0.5
+transformers>=4.25
