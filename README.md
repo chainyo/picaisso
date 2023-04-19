@@ -82,9 +82,7 @@ Once the API is running, you can test it by going to `http://localhost:7680/` in
 
 You should see the landing page of the API.
 
-<div align="center">
-  <img src="img/api-landing-page.png" width="500" height="500" />
-</div>
+![landing-page-picaisso-api](img/api-landing-page.png)
 
 Click on the `Docs` button to see the API documentation and test the `/generate` endpoint. Check the [Usage](##usage) section for more details.
 
@@ -132,9 +130,7 @@ as expected. You can find the API documentation at `http://localhost:7680/docs` 
 
 1. Click on the `Authorize` button and enter your API key in the `Value` field.
 
-<div align="center">
-  <img src="img/api-docs-2.png" width="400" height="600" />
-</div>
+![api-docs-2](img/api-docs-2.png)
 
 2. Use the `generate` endpoint to generate an image.
 
