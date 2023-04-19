@@ -57,7 +57,13 @@ docker images
 
 2. Run the Docker container
 ```bash
-docker run -d --gpus all --name picaisso-api -p 7680:7680 --restart unless-stopped picaisso-api:latest
+docker run -d \
+  --gpus all \
+  --name picaisso-api \
+  -p 7680:7680 \
+  -v ${HOME}/.cache:/root/.cache \
+  --restart unless-stopped \
+  picaisso-api:latest
 ```
 
 
