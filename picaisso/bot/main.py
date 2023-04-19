@@ -64,7 +64,6 @@ class OpenjourneyBot(discord.Client):
 
     async def generate_art(self, interaction: discord.Interaction, prompt: str):
         try:
-            logger.debug(f"Client headers: {self.web_client.headers}")
             async with self.web_client.post(
                 f"{os.getenv('API_URL')}/generate",
                 headers=self.web_client.headers,
