@@ -106,6 +106,13 @@ docker run -d \
   picaisso-bot:latest
 ```
 
+If you successfully created the Discord bot application, you just need to invite it to your server. You can find the invite link in the `OAuth2` section of your Discord bot application.
+(See the tutorial link in the `.env.template` file.)
+
+Mine is live! 🎉
+
+![picaisso-bot](img/bot-online.png)
+
 ## Usage
 
 WIP...
