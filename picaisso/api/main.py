@@ -14,7 +14,7 @@ from config import settings
 from dependencies import get_current_user, authenticate_user
 from diffusion_model import DiffusionService
 from models import ArtCreate, SignedUrl, Token
-from upload_s3 import upload_image
+from utils import upload_image
 
 
 app = FastAPI(
@@ -104,3 +104,8 @@ async def authentication(
 
     logger.debug(f"Authenticating user {form_data.username}")
     return user
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", host="0.0.0.0", port=7680, reload=True)
