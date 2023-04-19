@@ -9,23 +9,22 @@ from diffusers import StableDiffusionPipeline
 
 import torch
 from torch import autocast
+# Torch optimizations for inference
 torch.backends.cudnn.benchmark = True
 torch.backends.cuda.matmul.allow_tf32 = True
 
-from config import settings
 
 class DiffusionService():
-    def __init__(
-        self,
-        model: str = "prompthero/openjourney",
-        dtype: torch.dtype = torch.float16,
-        n_steps: int = 50,
-    ):
-        self.model = model
-        self.dtype = dtype
+    def __init__(self, model_name: str, dtype: str, n_steps: int, max_batch_size: int, max_wait: int):
+        self.model = model_name
         self.n_steps = n_steps
-        self.max_batch_size = settings.max_batch_size
-        self.max_wait = settings.max_wait
+        self.max_batch_size = max_batch_size
+        self.max_wait = max_wait
+
+        if dtype == "float16":
+            self.dtype = torch.float16
+        elif dtype == "float32":
+            self.dtype = torch.float32
         
         # Multi requests support
         self.queue = []

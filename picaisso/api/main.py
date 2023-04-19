@@ -24,7 +24,13 @@ app = FastAPI(
     debug=settings.debug,
 )
 
-service = DiffusionService()
+service = DiffusionService(
+    model_name=settings.model_name,
+    dtype=settings.model_precision,
+    n_steps=settings.n_steps,
+    max_batch_size=settings.max_batch_size,
+    max_wait=settings.max_wait,
+)
 
 
 @app.on_event("startup")
@@ -75,8 +81,9 @@ async def generate(
     with io.BytesIO() as buffer:
         img_bytes = img_to_send.save(buffer, format="JPEG")
         img_bytes = buffer.getvalue()
-        
-    background_tasks.add_task(upload_image, img_bytes, data)
+
+    if settings._use_s3:
+        background_tasks.add_task(upload_image, img_bytes, data)
     
     return Response(content=img_bytes, media_type="image/jpeg")
     
@@ -97,9 +104,3 @@ async def authentication(
 
     logger.debug(f"Authenticating user {form_data.username}")
     return user
-
-
-if __name__ == "__main__":
-    import uvicorn
-    
-    uvicorn.run("main:app", host="0.0.0.0", port=7680, reload=True)
