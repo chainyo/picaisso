@@ -23,6 +23,15 @@ For self-hosting instructions, keep reading the README. 👇
 
 ---
 
+Some examples of generated images:
+
+![picaisso-sample-1](assets/picaisso-sample-1.jpg)
+![picaisso-sample-2](assets/picaisso-sample-2.jpg)
+![picaisso-sample-3](assets/picaisso-sample-3.jpg)
+![picaisso-sample-4](assets/picaisso-sample-4.jpg)
+
+---
+
 ## Requirements
 
 - [Docker](https://docs.docker.com/get-docker/) installed
