@@ -23,12 +23,27 @@ For self-hosting instructions, keep reading the README. 👇
 
 ---
 
-Some examples of generated images:
-
-![picaisso-sample-1](assets/picaisso-sample-1.jpg)
-![picaisso-sample-2](assets/picaisso-sample-2.jpg)
-![picaisso-sample-3](assets/picaisso-sample-3.jpg)
-![picaisso-sample-4](assets/picaisso-sample-4.jpg)
+<div align="center">
+  <h3>Some examples of generated images:</h3>
+  <table>
+    <tr>
+      <td>
+        <img src="assets/picaisso-sample-1.jpg" width="200" height="200" />
+      </td>
+      <td>
+        <img src="assets/picaisso-sample-2.jpg" width="200" height="200" />
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="assets/picaisso-sample-3.jpg" width="200" height="200" />
+      </td>
+      <td>
+        <img src="assets/picaisso-sample-4.jpg" width="200" height="200" />
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
