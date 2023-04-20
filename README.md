@@ -9,6 +9,20 @@
 
 ---
 
+You can self-host the API and the Discord bot on your own machine or on a server.
+
+**OR**
+
+You can use my own self-hosted API and Discord bot. Add the bot to your Discord server and start generating art! 🎉
+
+> Click [here](https://discord.com/api/oauth2/authorize?client_id=1066110612272336936&permissions=35840&scope=bot) to invite the bot to your server.
+> _Note: The bot is currently hosted on my own workstation, so it might be offline sometimes._
+> _Note 2: I'm saving all the generated images on my S3 bucket, these images will be used to create a dataset available for free on Hugging Face._
+
+For self-hosting instructions, keep reading the README. 👇
+
+---
+
 ## Requirements
 
 - [Docker](https://docs.docker.com/get-docker/) installed
@@ -182,3 +196,7 @@ Enjoy the result! 🎉
 If you have any questions or issues, feel free to open an issue or contact me on [Twitter](https://twitter.com/chainyo_ai), Discord (ChainYo#3610) or via email (t.chaigneau.tc@gmail.com).
 
 If you like the project, please consider giving it a ⭐️ and share it with your friends.
+
+---
+
+[Buy me a book](https://www.buymeacoffee.com/chainyo) 📚 if you want to support my work.
