@@ -4,7 +4,6 @@ import asyncio
 import io
 import json
 import os
-import requests
 from aiohttp import ClientSession
 from dotenv import load_dotenv
 from loguru import logger
@@ -35,6 +34,7 @@ class OpenjourneyBot(discord.Client):
         """When the bot is ready."""
         await self.wait_until_ready()
         logger.debug(f"Logged in as {self.user}")
+
 
     async def on_guild_join(self, guild: discord.Guild) -> None:
         """
@@ -91,12 +91,23 @@ class OpenjourneyBot(discord.Client):
                 headers=self.web_client.headers,
                 data=json.dumps({"prompt": prompt, "author": f"discord_{interaction.user}"}),
             ) as response:
-                data = await response.read()
-                image = discord.File(io.BytesIO(data), filename=f"{prompt}.jpg")
-                await interaction.edit_original_response(
-                    content=f"Here's your art, {interaction.user.mention} - Art generated from prompt: `{prompt}`",
-                    attachments=[image],
-                )
+                # Handle response status
+                if response.status == 200:
+                    data = await response.read()
+                    image = discord.File(io.BytesIO(data), filename=f"{prompt}.jpg")
+
+                    await interaction.edit_original_response(
+                        content=f"Here's your art, {interaction.user.mention} - Art generated from prompt: `{prompt}`",
+                        attachments=[image],
+                    )
+
+                elif response.status == 401:
+                    await self._authenticate()
+                    await self.generate_art(interaction, prompt)
+
+                elif response.status == 500:
+                    raise Exception("Internal server error")
+
         except Exception as e:
             await interaction.edit_original_response(content=f"Something went wrong while generating art: {e}")
 
@@ -113,16 +124,11 @@ async def art(interaction: discord.Interaction, prompt: str) -> None:
     Raises:
         requests.exceptions.HTTPError: If something went wrong while generating art.
     """
-    try:
-        if prompt != "":
-            await interaction.response.send_message(f"{interaction.user} requested: `{prompt}`")
-            interaction.client.loop.create_task(interaction.client.generate_art(interaction, prompt))
-        else:
-            await interaction.response.send_message("Please provide a prompt")
-    except requests.exceptions.HTTPError as e:
-        await interaction.client._authenticate()
-        logger.error(e)
-        return await art(interaction, prompt)
+    if prompt != "":
+        await interaction.response.send_message(f"{interaction.user} requested: `{prompt}`")
+        interaction.client.loop.create_task(interaction.client.generate_art(interaction, prompt))
+    else:
+        await interaction.response.send_message("Please provide a prompt")
   
    
 async def main():
