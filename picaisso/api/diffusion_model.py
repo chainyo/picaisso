@@ -26,11 +26,7 @@ class DiffusionService:
         max_wait: int,
     ):
         self.model = model_name
-        self.dtype = {
-            "fp32": torch.float32,
-            "fp16": torch.float16,
-            "bf16": torch.bfloat16
-        }[dtype]
+        self.dtype = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.bfloat16}[dtype]
         self.n_steps = n_steps
         self.max_batch_size = max_batch_size
         self.max_wait = max_wait
