@@ -7,6 +7,8 @@ from loguru import logger
 
 from diffusers import StableDiffusionPipeline
 
+import tomesd
+
 import torch
 from torch import autocast
 # Torch optimizations for inference
@@ -32,6 +34,7 @@ class DiffusionService():
         assert torch.cuda.is_available(), "CUDA is not available"
         self.pipeline = StableDiffusionPipeline.from_pretrained(self.model, torch_dtype=self.dtype)
         self.pipeline.to("cuda:0")
+        tomesd.apply_patch(self.pipeline, ratio=0.5)
     
     
     def schedule_processing_if_needed(self):

@@ -8,4 +8,5 @@ pydantic>=1.8
 python-dotenv>=0.21
 python-jose>=3.3
 python-multipart>=0.0.5
+tomesd>=0.1.2
 transformers>=4.25
