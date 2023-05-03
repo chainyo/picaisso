@@ -10,13 +10,21 @@ from diffusers import StableDiffusionPipeline
 from loguru import logger
 from torch import autocast
 
+
 # Torch optimizations for inference
 torch.backends.cudnn.benchmark = True
 torch.backends.cuda.matmul.allow_tf32 = True
 
 
 class DiffusionService:
-    def __init__(self, model_name: str, dtype: str, n_steps: int, max_batch_size: int, max_wait: int):
+    def __init__(
+        self,
+        model_name: str,
+        dtype: str,
+        n_steps: int,
+        max_batch_size: int,
+        max_wait: int,
+    ):
         self.model = model_name
         self.dtype = {
             "fp32": torch.float32,
@@ -82,7 +90,9 @@ class DiffusionService:
 
             try:
                 batch = [prompt["prompt"] for prompt in prompt_batch]
-                results = await asyncio.get_event_loop().run_in_executor(None, functools.partial(self.inference, batch))
+                results = await asyncio.get_event_loop().run_in_executor(
+                    None, functools.partial(self.inference, batch)
+                )
                 for task, result in zip(prompt_batch, results.images):
                     task["result"] = result
                     task["done_event"].set()
@@ -93,5 +103,8 @@ class DiffusionService:
     def inference(self, prompt: str, n_samples: int = 1) -> np.ndarray:
         with autocast("cuda"):
             return self.pipeline(
-                prompt, num_images_per_prompt=n_samples, num_inference_steps=self.n_steps, output_type="numpy"
+                prompt,
+                num_images_per_prompt=n_samples,
+                num_inference_steps=self.n_steps,
+                output_type="numpy",
             )

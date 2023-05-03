@@ -12,6 +12,7 @@ from models import TokenData
 
 from config import settings
 
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.api_prefix}/auth")
 
 
@@ -63,7 +64,6 @@ async def get_current_user(
 async def authenticate_user(username: str, password: str) -> dict:
     """Authenticate user"""
     if username != settings.username or password != settings.password:
-
         raise HTTPException(
             status_code=http_status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
