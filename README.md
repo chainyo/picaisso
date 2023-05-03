@@ -53,7 +53,7 @@ For self-hosting instructions, keep reading the README. 👇
 - NVIDIA GPU with at least 12GB of VRAM (with a batch size of 1)
 - NVIDIA drivers installed + [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) installed
 - Linux based OS
-> Please Windows users, go dual-boot, unfortunatly I don't have any experience with Windows and Docker.
+> Please Windows users, go dual-boot, unfortunately I don't have any experience with Windows and Docker.
 
 ## Installation
 
