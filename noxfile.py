@@ -104,12 +104,9 @@ def precommit(session: Session) -> None:
         "--show-diff-on-failure",
     ]
     session.install(
-        "black",
-        "isort",
-        "pep8-naming",
         "pre-commit",
-        "pre-commit-hooks",
     )
+    session.install(".[dev]")
     session.run("pre-commit", *args)
     if args and args[0] == "install":
         activate_virtualenv_in_precommit_hooks(session)
