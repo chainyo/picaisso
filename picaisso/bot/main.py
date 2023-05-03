@@ -4,14 +4,14 @@ import asyncio
 import io
 import json
 import os
-from aiohttp import ClientSession
-from dotenv import load_dotenv
-from loguru import logger
 from typing import Optional
 
 import discord
+from aiohttp import ClientSession
 from discord import app_commands
 from discord.ext import commands
+from dotenv import load_dotenv
+from loguru import logger
 
 
 class OpenjourneyBot(discord.Client):

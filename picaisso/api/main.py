@@ -2,20 +2,19 @@
 
 import asyncio
 import io
-from loguru import logger
-from PIL import Image
 
-from fastapi import BackgroundTasks, FastAPI, Depends, HTTPException
-from fastapi.responses import HTMLResponse, Response
-from fastapi import status as http_status
-from fastapi.security import OAuth2PasswordRequestForm
-
-from config import settings
-from dependencies import get_current_user, authenticate_user
+from dependencies import authenticate_user, get_current_user
 from diffusion_model import DiffusionService
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
+from fastapi import status as http_status
+from fastapi.responses import HTMLResponse, Response
+from fastapi.security import OAuth2PasswordRequestForm
+from loguru import logger
 from models import ArtCreate, SignedUrl, Token
+from PIL import Image
 from utils import upload_image
 
+from config import settings
 
 app = FastAPI(
     title=settings.project_name,

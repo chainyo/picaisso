@@ -1,10 +1,11 @@
 # Copyright (c) 2023, Thomas Chaigneau. All rights reserved.
 
 import uuid
+
 from aiobotocore.session import get_session
+from models import ArtCreate
 
 from config import settings
-from models import ArtCreate
 
 
 async def upload_image(img_bytes: bytes, data: ArtCreate):

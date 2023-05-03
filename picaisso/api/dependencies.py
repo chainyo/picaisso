@@ -1,18 +1,16 @@
 # Copyright (c) 2023, Thomas Chaigneau. All rights reserved.
 
 from datetime import datetime, timedelta
-from loguru import logger
 from typing import Union
 
 from fastapi import Depends, HTTPException
 from fastapi import status as http_status
 from fastapi.security import OAuth2PasswordBearer
-
 from jose import JWTError, jwt
-
-from config import settings
+from loguru import logger
 from models import TokenData
 
+from config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.api_prefix}/auth")
 

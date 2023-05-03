@@ -2,14 +2,12 @@
 
 import asyncio
 import functools
+
 import numpy as np
-from loguru import logger
-
-from diffusers import StableDiffusionPipeline
-
 import tomesd
-
 import torch
+from diffusers import StableDiffusionPipeline
+from loguru import logger
 from torch import autocast
 
 # Torch optimizations for inference

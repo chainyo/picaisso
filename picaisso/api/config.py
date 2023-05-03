@@ -1,10 +1,10 @@
 # Copyright (c) 2023, Thomas Chaigneau. All rights reserved.
 
 from os import getenv
-from dotenv import load_dotenv
-from loguru import logger
 from typing import Optional, Union
 
+from dotenv import load_dotenv
+from loguru import logger
 from pydantic import Field, validator
 from pydantic.dataclasses import dataclass
 
