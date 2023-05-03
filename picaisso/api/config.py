@@ -66,8 +66,8 @@ class Settings:
     @validator("model_precision")
     def model_precision_must_be_valid(cls, value: str):
         """Check that the model precision is valid."""
-        if value not in ["fp16", "fp32"]:
-            raise ValueError("model_precision must be either `fp16` or `fp32`.")
+        if value not in {"fp16", "fp32", "bf16"}:
+            raise ValueError("model_precision must be either `fp16`, `fp32` or `bf16`.")
         return value
 
     def __post_init__(self):
