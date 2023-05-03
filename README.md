@@ -16,8 +16,7 @@ You can self-host the API and the Discord bot on your own machine or on a server
 You can use my own self-hosted API and Discord bot. Add the bot to your Discord server and start generating art! 🎉
 
 > Click [here](https://discord.com/api/oauth2/authorize?client_id=1066110612272336936&permissions=35840&scope=bot) to invite the bot to your server.
-> _Note: The bot is currently hosted on my own workstation, so it might be offline sometimes._
-> _Note 2: I'm saving all the generated images on my S3 bucket, these images will be used to create a dataset available for free on Hugging Face._
+> _Note: The bot is currently hosted on my own workstation, so it might be offline sometimes._ > _Note 2: I'm saving all the generated images on my S3 bucket, these images will be used to create a dataset available for free on Hugging Face._
 
 For self-hosting instructions, keep reading the README. 👇
 
@@ -56,23 +55,27 @@ For self-hosting instructions, keep reading the README. 👇
 ## Installation
 
 1. Clone the repository
+
 ```bash
 git clone https://github.com/chainyo/picaisso.git
 ```
 
-2. Create your own `.env` file for the API and update the values with your own. 
-> Follow the `.env.template` comments.
+2. Create your own `.env` file for the API and update the values with your own.
 
-3. Create your own `.env` file for the Discord Bot and update the values with your own. 
-> Follow the `.env.template` comments.
-> The Discord bot application installation process is explained if you follow the link in the `.env.template` file.
+   > Follow the `.env.template` comments.
 
-4. (Optional) If you want to store the generated images, there is a S3 bucket configuration in the `.env` file. 
-You can create your own S3 bucket and update the values with your own. Leave the values empty if you don't want to use S3.
+3. Create your own `.env` file for the Discord Bot and update the values with your own.
+
+   > Follow the `.env.template` comments.
+   > The Discord bot application installation process is explained if you follow the link in the `.env.template` file.
+
+4. (Optional) If you want to store the generated images, there is a S3 bucket configuration in the `.env` file.
+   You can create your own S3 bucket and update the values with your own. Leave the values empty if you don't want to use S3.
 
 ## Deployment
 
 There are two steps:
+
 - Deploy the API
 - Deploy the Discord Bot
 
@@ -87,17 +90,21 @@ docker network create picaisso
 ### Deploy the API
 
 1. Build the Docker image
+
 ```bash
 docker build -t picaisso-api:latest -f docker/api/Dockerfile .
 ```
 
 You should see the built image in your Docker images list, you can check it with the following command:
+
 ```bash
 docker images
 ```
+
 ![picaisso-api](assets/docker-images-api.png)
 
 2. Run the Docker container
+
 ```bash
 docker run -d \
   --gpus all \
@@ -108,6 +115,7 @@ docker run -d \
   --name picaisso-api \
   picaisso-api:latest
 ```
+
 <!--
 docker run -d --gpus all --network picaisso -p 7681:7681 -v ~/.cache:/root/.cache --restart unless-stopped --name picaisso-api picaisso-api:latest
 -->
@@ -144,6 +152,7 @@ docker run -d \
   --name picaisso-bot \
   picaisso-bot:latest
 ```
+
 <!--
 docker run -d --restart unless-stopped --network picaisso --name picaisso-bot picaisso-bot:latest
 -->
@@ -172,7 +181,7 @@ You can use the project in three different ways:
 
 ### API documentation
 
-For testing purposes, you can use the API documentation to generate images and validate everything is working 
+For testing purposes, you can use the API documentation to generate images and validate everything is working
 as expected. You can find the API documentation at `http://localhost:7681/docs` when the API is running.
 
 ![api-docs-1](assets/api-docs-1.png)
@@ -191,10 +200,10 @@ as expected. You can find the API documentation at `http://localhost:7681/docs` 
 
 ![api-docs-4](assets/api-docs-4.png)
 
-* _prompt: any text you want to use to generate the image._
-* _author: the name of the author of the image. Used for s3 storage only, you can let string._
+- _prompt: any text you want to use to generate the image._
+- _author: the name of the author of the image. Used for s3 storage only, you can let string._
 
-2.3. Enter the `Execute` button and wait for the image to be generated.
+  2.3. Enter the `Execute` button and wait for the image to be generated.
 
 ![api-docs-5](assets/api-docs-5.png)
 

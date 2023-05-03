@@ -72,7 +72,14 @@ class Settings:
 
     def __post_init__(self):
         """Post init hook."""
-        self.using_s3 = all([self.bucket_name, self.region_name, self.access_key_id, self.secret_access_key])
+        self.using_s3 = all(
+            [
+                self.bucket_name,
+                self.region_name,
+                self.access_key_id,
+                self.secret_access_key,
+            ]
+        )
 
         if self.using_s3:
             logger.warning("S3 credentials are set, the S3 storage will be used.")
@@ -86,7 +93,8 @@ settings = Settings(
     project_name=getenv("PROJECT_NAME", "PicAIsso"),
     version=getenv("VERSION", "1.0.0"),
     description=getenv(
-        "DESCRIPTION", "🎨 Imagine what Picasso could have done with AI. Self-host your StableDiffusion API."
+        "DESCRIPTION",
+        "🎨 Imagine what Picasso could have done with AI. Self-host your StableDiffusion API.",
     ),
     api_prefix=getenv("API_PREFIX", "/api/v1"),
     debug=getenv("DEBUG", True),

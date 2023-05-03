@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "PicAIsso"
+version = "1.0.2"
+description = "🎨 Imagine what Picasso could have done with AI. Self-host your StableDiffusion API."
+authors = ["Thomas Chaigneau <t.chaigneau.tc@gmail.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+homepage = "https://github.com/chainyo/picaisso"
+repository = "https://github.com/chainyo/picaisso"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+loguru = ">=0.6"
+python-dotenv = ">=0.21"
+
+[tool.poetry.group.api.dependencies]
+accelerate = ">=0.15"
+aiohttp = ">=3.8"
+aiobotocore = ">=2.4"
+diffusers = { version = ">=0.11", extras = ["torch"] }
+fastapi = { version = ">=0.88", extras = ["all"] }
+pydantic = ">=1.8"
+python-jose = ">=3.3"
+python-multipart = ">=0.0.5"
+tomesd = ">=0.1.2"
+transformers = ">=4.25"
+
+[tool.poetry.group.bot.dependencies]
+aiohttp = ">=3.8"
+"discord.py" = ">=2.1"
+greenlet = "*"
+requests = ">=2.26"
+
+[tool.poetry.group.dev.dependencies]
+black = ">=23.3.0"
+isort = ">=5.12.0"
+
+[tool.black]
+line-length = 119
+
+[tool.isort]
+profile = "black"
+force_single_line = false
+lines_after_imports = 2
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
