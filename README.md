@@ -52,6 +52,11 @@ For self-hosting instructions, keep reading the README. 👇
 - NVIDIA GPU with at least 12GB of VRAM (with a batch size of 1)
 - NVIDIA drivers installed + [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) installed
 
+## Contributing
+
+If you want to contribute to the project, please read the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+It will help you to setup your development environment.
+
 ## Installation
 
 1. Clone the repository
