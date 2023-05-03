@@ -52,8 +52,6 @@ For self-hosting instructions, keep reading the README. 👇
 - [Docker](https://docs.docker.com/get-docker/) installed
 - NVIDIA GPU with at least 12GB of VRAM (with a batch size of 1)
 - NVIDIA drivers installed + [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker) installed
-- Linux based OS
-> Please Windows users, go dual-boot, unfortunately I don't have any experience with Windows and Docker.
 
 ## Installation
 
@@ -104,19 +102,22 @@ docker images
 docker run -d \
   --gpus all \
   --network picaisso \
-  -p 7680:7680 \
+  -p 7681:7681 \
   -v ${HOME}/.cache:/root/.cache \
   --restart unless-stopped \
   --name picaisso-api \
   picaisso-api:latest
 ```
+<!--
+docker run -d --gpus all --network picaisso -p 7681:7681 -v ~/.cache:/root/.cache --restart unless-stopped --name picaisso-api picaisso-api:latest
+-->
 
 3. Test the API
 
-The API should be running on port `7680` of your machine. It can take a few minutes to start, because the model has
-to be downloaded and loaded on the first run. Because we are using the `${HOME}/.cache`folder as a mounted volume, the model will be downloaded only once and will be reused on the next runs.
+The API should be running on port `7681` of your machine. It can take a few minutes to start, because the model has
+to be downloaded and loaded on the first run. Because we are using the `${HOME}/.cache` folder as a mounted volume, the model will be downloaded only once and will be reused on the next runs.
 
-Once the API is running, you can test it by going to `http://localhost:7680/` in your web browser.
+Once the API is running, you can test it by going to `http://localhost:7681/` in your web browser.
 
 You should see the landing page of the API.
 
@@ -143,9 +144,19 @@ docker run -d \
   --name picaisso-bot \
   picaisso-bot:latest
 ```
+<!--
+docker run -d --restart unless-stopped --network picaisso --name picaisso-bot picaisso-bot:latest
+-->
 
 If you successfully created the Discord bot application, you just need to invite it to your server. You can find the invite link in the `OAuth2` section of your Discord bot application.
 (See the tutorial link in the `.env.template` file.)
+
+<!--
+Which scopes does the bot need?
+-->
+
+Note: Server Members Intent must be enabled on the Discord bot (under the `Bot` section):
+![server-members-intent](https://user-images.githubusercontent.com/37621491/236005728-8469f159-98e9-4082-bfc7-772da5d7cacd.png)
 
 Mine is live! 🎉
 
@@ -162,7 +173,7 @@ You can use the project in three different ways:
 ### API documentation
 
 For testing purposes, you can use the API documentation to generate images and validate everything is working 
-as expected. You can find the API documentation at `http://localhost:7680/docs` when the API is running.
+as expected. You can find the API documentation at `http://localhost:7681/docs` when the API is running.
 
 ![api-docs-1](assets/api-docs-1.png)
 
