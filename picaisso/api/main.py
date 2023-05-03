@@ -72,7 +72,7 @@ async def health_check():
     f"{settings.api_prefix}/generate",
     tags=["generate"],
     response_model=SignedUrl,
-    status_code=http_status.HTTP_200_OK
+    status_code=http_status.HTTP_200_OK,
 )
 async def generate(
     data: ArtCreate,
@@ -87,11 +87,16 @@ async def generate(
 
     if settings.using_s3:
         background_tasks.add_task(upload_image, img_bytes, data)
-    
-    return Response(content=img_bytes, media_type="image/jpeg")
-    
 
-@app.post(f"{settings.api_prefix}/auth", response_model=Token, tags=["authentication"], status_code=http_status.HTTP_200_OK)
+    return Response(content=img_bytes, media_type="image/jpeg")
+
+
+@app.post(
+    f"{settings.api_prefix}/auth",
+    response_model=Token,
+    tags=["authentication"],
+    status_code=http_status.HTTP_200_OK,
+)
 async def authentication(
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
@@ -107,6 +112,7 @@ async def authentication(
 
     logger.debug(f"Authenticating user {form_data.username}")
     return user
+
 
 if __name__ == "__main__":
     import uvicorn

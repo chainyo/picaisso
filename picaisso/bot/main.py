@@ -24,17 +24,15 @@ class OpenjourneyBot(discord.Client):
         if intents is None:
             intents = discord.Intents.default()
         intents.members = True
-        
+
         super().__init__(intents=intents)
         self.web_client = web_client
         self.tree = app_commands.CommandTree(self)
-        
-    
+
     async def on_ready(self) -> None:
         """When the bot is ready."""
         await self.wait_until_ready()
         logger.debug(f"Logged in as {self.user}")
-
 
     async def on_guild_join(self, guild: discord.Guild) -> None:
         """
@@ -44,35 +42,34 @@ class OpenjourneyBot(discord.Client):
             guild (discord.Guild): The guild that the bot joined.
         """
         await self.tree.sync(guild=guild)
-        
-    
+
     async def _authenticate(self) -> None:
         """Authenticate with the API."""
         async with self.web_client.post(
             f"{os.getenv('API_URL')}/auth",
             headers={
                 "Content-Type": "application/json",
-                "Content-Type": "application/x-www-form-urlencoded"
+                "Content-Type": "application/x-www-form-urlencoded",
             },
             data={
                 "username": os.getenv("USERNAME"),
-                "password": os.getenv("PASSWORD")
+                "password": os.getenv("PASSWORD"),
             },
         ) as response:
             data = await response.json()
-            self.web_client.headers.update({
-                "accept": "application/json",
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {data['access_token']}",
-            })
-        
-    
+            self.web_client.headers.update(
+                {
+                    "accept": "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {data['access_token']}",
+                }
+            )
+
     async def setup_hook(self) -> None:
         """Setup the bot at startup."""
         await self._authenticate()
         self.tree.add_command(art)
         await self.tree.sync()
-
 
     async def generate_art(self, interaction: discord.Interaction, prompt: str) -> None:
         """
@@ -129,10 +126,10 @@ async def art(interaction: discord.Interaction, prompt: str) -> None:
         interaction.client.loop.create_task(interaction.client.generate_art(interaction, prompt))
     else:
         await interaction.response.send_message("Please provide a prompt")
-  
-   
+
+
 async def main():
-    """Main loop."""""
+    """Main loop.""" ""
     async with ClientSession() as session:
         async with OpenjourneyBot(commands.when_mentioned, web_client=session) as client:
             await client.start(os.getenv("DISCORD_TOKEN"))

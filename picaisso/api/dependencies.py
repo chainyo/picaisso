@@ -24,13 +24,13 @@ def _get_username() -> str:
 def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None) -> str:
     """Create access token for user"""
     to_encode = data.copy()
-    
+
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
-    else :
+    else:
         expire = datetime.utcnow() + timedelta(minutes=30)
     to_encode.update({"exp": expire})
-    
+
     return jwt.encode(to_encode, settings.openssl_key, algorithm=settings.algorithm)
 
 
@@ -65,16 +65,14 @@ async def get_current_user(
 async def authenticate_user(username: str, password: str) -> dict:
     """Authenticate user"""
     if username != settings.username or password != settings.password:
-        
+
         raise HTTPException(
             status_code=http_status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=1440)
-    access_token = create_access_token(
-        data={"sub": username}, expires_delta=access_token_expires
-    )
+    access_token = create_access_token(data={"sub": username}, expires_delta=access_token_expires)
     logger.debug(f"Generate access token!")
-    
+
     return {"access_token": access_token, "token_type": "bearer"}
