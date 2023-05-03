@@ -21,9 +21,7 @@ except ImportError:
 package = "picaisso"
 python_versions = ["3.10"]
 nox.needs_version = ">= 2021.6.6"
-nox.options.sessions = (
-    "pre-commit",
-)
+nox.options.sessions = ("pre-commit",)
 
 
 def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
@@ -42,8 +40,7 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
     # quoting rules for Python and bash, but strip the outermost quotes so we
     # can detect paths within the bindir, like <bindir>/python.
     bindirs = [
-        bindir[1:-1] if bindir[0] in "'\"" else bindir
-        for bindir in (repr(session.bin), shlex.quote(session.bin))
+        bindir[1:-1] if bindir[0] in "'\"" else bindir for bindir in (repr(session.bin), shlex.quote(session.bin))
     ]
 
     virtualenv = session.env.get("VIRTUAL_ENV")
@@ -85,10 +82,7 @@ def activate_virtualenv_in_precommit_hooks(session: Session) -> None:
 
         text = hook.read_text()
 
-        if not any(
-            Path("A") == Path("a") and bindir.lower() in text.lower() or bindir in text
-            for bindir in bindirs
-        ):
+        if not any(Path("A") == Path("a") and bindir.lower() in text.lower() or bindir in text for bindir in bindirs):
             continue
 
         lines = text.splitlines()
@@ -111,7 +105,6 @@ def precommit(session: Session) -> None:
     ]
     session.install(
         "black",
-        "darglint",
         "isort",
         "pep8-naming",
         "pre-commit",
