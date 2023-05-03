@@ -106,7 +106,9 @@ def precommit(session: Session) -> None:
     session.install(
         "black",
         "isort",
+        "pep8-naming",
         "pre-commit",
+        "pre-commit-hooks",
     )
     session.run("pre-commit", *args)
     if args and args[0] == "install":
