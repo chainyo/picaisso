@@ -18,7 +18,11 @@ torch.backends.cuda.matmul.allow_tf32 = True
 class DiffusionService:
     def __init__(self, model_name: str, dtype: str, n_steps: int, max_batch_size: int, max_wait: int):
         self.model = model_name
-        self.dtype = torch.float32 if dtype == "fp32" else torch.float16
+        self.dtype = {
+            "fp32": torch.float32,
+            "fp16": torch.float16,
+            "bf16": torch.bfloat16
+        }[dtype]
         self.n_steps = n_steps
         self.max_batch_size = max_batch_size
         self.max_wait = max_wait
