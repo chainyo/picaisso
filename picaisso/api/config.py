@@ -5,10 +5,12 @@ from dotenv import load_dotenv
 from loguru import logger
 from typing import Optional, Union
 
-from pydantic import BaseSettings, Field, validator
+from pydantic import Field, validator
+from pydantic.dataclasses import dataclass
 
 
-class Settings(BaseSettings):
+@dataclass
+class Settings:
     # General Configuration
     project_name: str
     version: str
@@ -31,7 +33,7 @@ class Settings(BaseSettings):
     region_name: Optional[str] = None
     access_key_id: Optional[str] = None
     secret_access_key: Optional[str] = None
-    _using_s3: bool = Field(init=False)
+    using_s3: bool = Field(init=False)
 
     @validator("username", "password", "openssl_key", "algorithm")
     def authentication_parameters_must_not_be_none(cls, value: str, field: str):
@@ -70,11 +72,9 @@ class Settings(BaseSettings):
 
     def __post_init__(self):
         """Post init hook."""
-        self._using_s3 = False if not all(
-            [self.bucket_name, self.region_name, self.access_key_id, self.secret_access_key]
-        ) else True
+        self.using_s3 = all([self.bucket_name, self.region_name, self.access_key_id, self.secret_access_key])
         
-        if self._using_s3:
+        if self.using_s3:
             logger.warning("S3 credentials are set, the S3 storage will be used.")
         else:
             logger.warning("S3 credentials are not set, the S3 storage will not be used.")

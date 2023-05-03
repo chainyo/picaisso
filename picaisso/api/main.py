@@ -85,7 +85,7 @@ async def generate(
         img_bytes = img_to_send.save(buffer, format="JPEG")
         img_bytes = buffer.getvalue()
 
-    if settings._using_s3:
+    if settings.using_s3:
         background_tasks.add_task(upload_image, img_bytes, data)
     
     return Response(content=img_bytes, media_type="image/jpeg")
