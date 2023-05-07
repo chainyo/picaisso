@@ -21,7 +21,6 @@ DTYPE_MAPPING = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.bfl
 TASK_MAPPING = OrderedDict(
     [
         ("image_to_image", "StableDiffusionImg2ImgPipeline"),
-        ("inpaint", "StableDiffusionInpaintPipeline"),
         ("super_resolution", "StableDiffusionUpscalePipeline"),
         ("text_to_image", "StableDiffusionPipeline"),
     ]
@@ -30,9 +29,15 @@ TASK_MAPPING = OrderedDict(
 TASK_INPUT_MAPPING = OrderedDict(
     [
         ("image_to_image", ("image", "prompt")),
-        ("inpaint", ("image",)),
-        ("super_resolution", ("image",)),
+        ("super_resolution", ("image", "prompt")),
         ("text_to_image", ("prompt",)),
+    ]
+)
+TASK_DEFAULT_MODEL = OrderedDict(
+    [
+        ("image_to_image", "stabilityai/stable-diffusion-2-1-base"),
+        ("super_resolution", "stabilityai/stable-diffusion-x4-upscaler"),
+        ("text_to_image", "stabilityai/stable-diffusion-2-1-base")
     ]
 )
 
@@ -105,9 +110,19 @@ class AutoService:
         """
         diffusers_module = __import__("diffusers")
 
-        pipeline = getattr(diffusers_module, TASK_MAPPING[self.task]).from_pretrained(
-            self.model, torch_dtype=self.dtype
-        )
+        try:
+            pipeline = getattr(diffusers_module, TASK_MAPPING[self.task]).from_pretrained(
+                self.model, torch_dtype=self.dtype
+            )
+        except ValueError as e:
+            if "Pipeline" in str(e):
+                logger.debug(
+                    f"The model {self.model} is not compatible with the task {self.task}. "
+                    f"Using the default model {TASK_DEFAULT_MODEL[self.task]} instead."
+                )
+                pipeline = getattr(diffusers_module, TASK_MAPPING[self.task]).from_pretrained(
+                    TASK_DEFAULT_MODEL[self.task], torch_dtype=self.dtype
+                )
 
         return pipeline
 
@@ -135,6 +150,9 @@ class AutoService:
 
         for input_name in self.input_names:
             our_task[input_name] = kwargs[input_name]
+
+        if self.task == "super_resolution":
+            our_task["image"] = our_task["image"].resize((128, 128))
 
         async with self.queue_lock:
             self.queue.append(our_task)
