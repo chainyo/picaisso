@@ -22,7 +22,7 @@ TASK_MAPPING = OrderedDict(
     [
         ("image_to_image", "StableDiffusionImg2ImgPipeline"),
         ("inpaint", "StableDiffusionInpaintPipeline"),
-        ("super_resolution", "StableUpscalePipeline"),
+        ("super_resolution", "StableDiffusionUpscalePipeline"),
         ("text_to_image", "StableDiffusionPipeline"),
     ]
 )
@@ -30,9 +30,9 @@ TASK_MAPPING = OrderedDict(
 TASK_INPUT_MAPPING = OrderedDict(
     [
         ("image_to_image", ("image", "prompt")),
-        ("inpaint", ("image")),
-        ("super_resolution", ("image")),
-        ("text_to_image", ("prompt")),
+        ("inpaint", ("image",)),
+        ("super_resolution", ("image",)),
+        ("text_to_image", ("prompt",)),
     ]
 )
 
@@ -168,13 +168,13 @@ class AutoService:
             try:
                 batch = {input_name: [inp[input_name] for inp in input_batch] for input_name in self.input_names}
                 results = await asyncio.get_event_loop().run_in_executor(
-                    None, functools.partial(self.inference, batch)
+                    None, functools.partial(self.inference, n_samples=1, **batch)
                 )
 
                 for task, result in zip(input_batch, results.images):
                     task["result"] = result
                     task["done_event"].set()
-                del prompt_batch
+                del batch, results
 
             except Exception as e:
                 logger.error(e)
