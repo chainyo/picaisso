@@ -84,7 +84,7 @@ async def generate(
     image = None
     if data.image:
         img_bytes = await download_image(data.image)
-        image = Image.open(io.BytesIO(img_bytes))
+        image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
     if data.prompt and image:
         out_img = await service.process_input(prompt=data.prompt, image=image)
