@@ -3,8 +3,8 @@
 import asyncio
 import io
 
+from auto_service import AutoService
 from dependencies import authenticate_user, get_current_user
-from diffusion_model import DiffusionService
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 from fastapi import status as http_status
 from fastapi.responses import HTMLResponse, Response
@@ -12,7 +12,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from loguru import logger
 from models import ArtCreate, SignedUrl, Token
 from PIL import Image
-from utils import upload_image
+from utils import download_image, upload_image
 
 from config import settings
 
@@ -24,8 +24,9 @@ app = FastAPI(
     debug=settings.debug,
 )
 
-service = DiffusionService(
+service = AutoService(
     model_name=settings.model_name,
+    task=settings.task,
     dtype=settings.model_precision,
     n_steps=settings.n_steps,
     max_batch_size=settings.max_batch_size,
@@ -79,7 +80,21 @@ async def generate(
     background_tasks: BackgroundTasks,
     current_user: str = Depends(get_current_user),  # for authentication purposes
 ):
-    out_img = await service.process_input(data.prompt)
+    """Generate an image from a prompt or an image url, or both."""
+    image = None
+    if data.image:
+        img_bytes = await download_image(data.image)
+        image = Image.open(io.BytesIO(img_bytes))
+
+    if data.prompt and image:
+        out_img = await service.process_input(prompt=data.prompt, image=image)
+    elif data.prompt:
+        out_img = await service.process_input(prompt=data.prompt)
+    elif image:
+        out_img = await service.process_input(image=image)
+    else:
+        raise HTTPException(status_code=400, detail="Please provide a prompt or an image URL.")
+
     img_to_send = Image.fromarray((out_img * 255).astype("uint8"))
     with io.BytesIO() as buffer:
         img_bytes = img_to_send.save(buffer, format="JPEG")
