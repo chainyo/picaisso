@@ -30,12 +30,6 @@ class Image(BaseModel):
     content: bytes
 
 
-class SignedUrl(BaseModel):
-    """SignedUrl model"""
-
-    url: str
-
-
 class Token(BaseModel):
     """Token model"""
 
