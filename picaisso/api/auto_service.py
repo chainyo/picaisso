@@ -3,7 +3,8 @@
 import asyncio
 import functools
 from collections import OrderedDict
-from typing import Union
+from PIL import Image
+from typing import Optional, Union
 
 import numpy as np
 import tomesd
@@ -134,25 +135,37 @@ class AutoService:
                 self.queue[0]["time"] + self.max_wait, self.needs_processing.set
             )
 
-    async def process_input(self, **kwargs) -> Union[str, np.ndarray]:
+    async def process_input(
+        self, prompt: Optional[str] = None, image: Optional[Image.Image] = None
+    ) -> np.ndarray:
         """Process the input and wait for the result before returning.
 
         Args:
-            **kwargs: The inputs to the task. Must match the task input names.
+            prompt (Optional[str], optional): The prompt to use. Defaults to None.
+            image (Optional[Image.Image], optional): The image to use. Defaults to None.
 
         Returns:
-            str: The result of the task.
+            np.ndarray: The result of the processing, as a numpy array.
         """
         our_task = {
             "done_event": asyncio.Event(),
             "time": asyncio.get_event_loop().time(),
         }
 
-        for input_name in self.input_names:
-            our_task[input_name] = kwargs[input_name]
+        if prompt is not None and "prompt" in self.input_names:
+            our_task["prompt"] = prompt
 
-        if self.task == "super_resolution":
-            our_task["image"] = our_task["image"].resize((128, 128))
+        if image is not None and "image" in self.input_names:
+            if self.task == "super_resolution":
+                our_task["image"] = image.resize((128, 128))
+            else:
+                our_task["image"] = image
+
+        if not all([k in our_task for k in self.input_names]):
+            logger.debug(f"Missing inputs for task {self.task}: {self.input_names}")
+            missing_inputs = [k for k in self.input_names if k not in our_task]
+            our_task["done_event"].set()
+            return ValueError(f"Missing inputs for task {self.task}: {missing_inputs}")
 
         async with self.queue_lock:
             self.queue.append(our_task)

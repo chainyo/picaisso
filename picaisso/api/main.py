@@ -2,6 +2,7 @@
 
 import asyncio
 import io
+import numpy as np
 
 from auto_service import AutoService
 from dependencies import authenticate_user, get_current_user
@@ -10,7 +11,7 @@ from fastapi import status as http_status
 from fastapi.responses import HTMLResponse, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from loguru import logger
-from models import ArtCreate, SignedUrl, Token
+from models import ArtCreate, Token
 from PIL import Image
 from utils import download_image, upload_image
 
@@ -72,7 +73,6 @@ async def health_check():
 @app.post(
     f"{settings.api_prefix}/generate",
     tags=["generate"],
-    response_model=SignedUrl,
     status_code=http_status.HTTP_200_OK,
 )
 async def generate(
@@ -87,23 +87,26 @@ async def generate(
         image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
     if data.prompt and image:
-        out_img = await service.process_input(prompt=data.prompt, image=image)
+        res = await service.process_input(prompt=data.prompt, image=image)
     elif data.prompt:
-        out_img = await service.process_input(prompt=data.prompt)
+        res = await service.process_input(prompt=data.prompt)
     elif image:
-        out_img = await service.process_input(image=image)
+        res = await service.process_input(image=image)
     else:
         raise HTTPException(status_code=400, detail="Please provide a prompt or an image URL.")
 
-    img_to_send = Image.fromarray((out_img * 255).astype("uint8"))
-    with io.BytesIO() as buffer:
-        img_bytes = img_to_send.save(buffer, format="JPEG")
-        img_bytes = buffer.getvalue()
+    if isinstance(res, ValueError):
+        return Response(content=res.args[0], media_type="text/plain")
+    elif isinstance(res, np.ndarray):
+        img_to_send = Image.fromarray((res * 255).astype("uint8"))
+        with io.BytesIO() as buffer:
+            img_bytes = img_to_send.save(buffer, format="JPEG")
+            img_bytes = buffer.getvalue()
 
-    if settings.using_s3:
-        background_tasks.add_task(upload_image, img_bytes, data)
+        if settings.using_s3:
+            background_tasks.add_task(upload_image, img_bytes, data)
 
-    return Response(content=img_bytes, media_type="image/jpeg")
+        return Response(content=img_bytes, media_type="image/jpeg")
 
 
 @app.post(
