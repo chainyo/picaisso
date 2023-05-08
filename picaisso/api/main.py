@@ -70,7 +70,7 @@ async def health_check():
 
 
 @app.get(
-    "/task",
+    f"{settings.api_prefix}/task",
     tags=["status"],
     response_model=StatusTask,
     status_code=http_status.HTTP_200_OK,
