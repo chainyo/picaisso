@@ -46,7 +46,7 @@ TASK_DEFAULT_MODEL = OrderedDict(
 )
 
 
-class AutoService:
+class DiffusionService:
     """Automatic mapping of tasks to services."""
 
     def __init__(

@@ -3,11 +3,12 @@
 from os import getenv
 from typing import Optional, Union
 
-from auto_service import TASK_MAPPING
+from diffusion_service import TASK_MAPPING
 from dotenv import load_dotenv
 from loguru import logger
 from pydantic import Field, validator
 from pydantic.dataclasses import dataclass
+
 
 
 @dataclass

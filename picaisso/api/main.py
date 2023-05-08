@@ -3,8 +3,9 @@
 import asyncio
 import io
 
-from auto_service import AutoService
+from config import settings
 from dependencies import authenticate_user, get_current_user
+from diffusion_service import DiffusionService
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 from fastapi import status as http_status
 from fastapi.responses import HTMLResponse, Response
@@ -14,7 +15,6 @@ from models import ArtCreate, Token
 from PIL import Image
 from utils import download_image, upload_image
 
-from config import settings
 
 
 app = FastAPI(
@@ -24,7 +24,7 @@ app = FastAPI(
     debug=settings.debug,
 )
 
-service = AutoService(
+service = DiffusionService(
     model_name=settings.model_name,
     task=settings.task,
     dtype=settings.model_precision,
