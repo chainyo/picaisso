@@ -2,6 +2,7 @@
 
 import uuid
 
+import aiohttp
 from aiobotocore.session import get_session
 from models import ArtCreate
 
@@ -23,3 +24,20 @@ async def upload_image(img_bytes: bytes, data: ArtCreate):
             Body=img_bytes,
             ContentType="image/jpeg",
         )
+
+
+async def download_image(url: str) -> bytes:
+    """
+    Download image from url.
+
+    Args:
+        url (str): image url
+
+    Returns:
+        bytes: image bytes
+    """
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            image_data = await response.read()
+
+    return image_data

@@ -3,6 +3,7 @@
 from os import getenv
 from typing import Optional, Union
 
+from diffusion_service import TASK_MAPPING
 from dotenv import load_dotenv
 from loguru import logger
 from pydantic import Field, validator
@@ -25,6 +26,7 @@ class Settings:
     # Model Configuration
     max_batch_size: int
     max_wait: float
+    task: str
     model_name: str
     model_precision: str
     n_steps: int
@@ -70,6 +72,13 @@ class Settings:
             raise ValueError("model_precision must be either `fp16`, `fp32` or `bf16`.")
         return value
 
+    @validator("task")
+    def task_must_be_valid(cls, value: str):
+        """Check that the task is valid."""
+        if value not in TASK_MAPPING.keys():
+            raise ValueError(f"task must be one of {list(TASK_MAPPING.keys())}.")
+        return value
+
     def __post_init__(self):
         """Post init hook."""
         self.using_s3 = all(
@@ -90,6 +99,7 @@ class Settings:
 load_dotenv()
 
 settings = Settings(
+    # General Configuration
     project_name=getenv("PROJECT_NAME", "PicAIsso"),
     version=getenv("VERSION", "1.0.0"),
     description=getenv(
@@ -98,15 +108,19 @@ settings = Settings(
     ),
     api_prefix=getenv("API_PREFIX", "/api/v1"),
     debug=getenv("DEBUG", True),
+    # Authentication
     username=getenv("USERNAME", None),
     password=getenv("PASSWORD", None),
     openssl_key=getenv("OPENSSL_KEY", None),
     algorithm=getenv("ALGORITHM", "HS256"),
+    # Model Configuration
     max_batch_size=getenv("MAX_BATCH_SIZE", 1),
     max_wait=getenv("MAX_WAIT", 0.5),
+    task=getenv("TASK", "text_to_image"),
     model_name=getenv("MODEL_NAME", "prompthero/openjourney"),
     model_precision=getenv("MODEL_PRECISION", "fp16"),
     n_steps=getenv("N_STEPS", 50),
+    # S3 Configuration
     bucket_name=getenv("BUCKET_NAME", None),
     region_name=getenv("REGION_NAME", None),
     access_key_id=getenv("ACCESS_KEY_ID", None),

@@ -1,13 +1,27 @@
 # Copyright (c) 2023, Thomas Chaigneau. All rights reserved.
 
+from typing import Optional
+
 from pydantic import BaseModel
 
 
 class ArtCreate(BaseModel):
     """ArtCreate model"""
 
-    prompt: str
+    prompt: Optional[str] = None
+    image: Optional[str] = None
     author: str
+
+    class Config:
+        """ArtCreate model config"""
+
+        schema_extra = {
+            "example": {
+                "prompt": "A beautiful image of a cat",
+                "image": "https://cdn.pixabay.com/photo/2017/02/20/18/03/cat-2083492_1280.jpg",
+                "author": "Thomas Chaigneau",
+            }
+        }
 
 
 class Image(BaseModel):
@@ -16,10 +30,19 @@ class Image(BaseModel):
     content: bytes
 
 
-class SignedUrl(BaseModel):
-    """SignedUrl model"""
+class StatusTask(BaseModel):
+    """StatusTask model"""
 
-    url: str
+    task: str
+
+    class Config:
+        """StatusTask model config"""
+
+        schema_extra = {
+            "example": {
+                "task": "text_to_image",
+            }
+        }
 
 
 class Token(BaseModel):

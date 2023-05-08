@@ -4,15 +4,15 @@ import asyncio
 import io
 
 from dependencies import authenticate_user, get_current_user
-from diffusion_model import DiffusionService
+from diffusion_service import DiffusionService
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
 from fastapi import status as http_status
 from fastapi.responses import HTMLResponse, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from loguru import logger
-from models import ArtCreate, SignedUrl, Token
+from models import ArtCreate, StatusTask, Token
 from PIL import Image
-from utils import upload_image
+from utils import download_image, upload_image
 
 from config import settings
 
@@ -26,6 +26,7 @@ app = FastAPI(
 
 service = DiffusionService(
     model_name=settings.model_name,
+    task=settings.task,
     dtype=settings.model_precision,
     n_steps=settings.n_steps,
     max_batch_size=settings.max_batch_size,
@@ -68,10 +69,20 @@ async def health_check():
     return HTMLResponse(content=content, media_type="text/html")
 
 
+@app.get(
+    f"{settings.api_prefix}/task",
+    tags=["status"],
+    response_model=StatusTask,
+    status_code=http_status.HTTP_200_OK,
+)
+async def get_task():
+    """Get the current task of the loaded pipeline."""
+    return {"task": service.task}
+
+
 @app.post(
     f"{settings.api_prefix}/generate",
     tags=["generate"],
-    response_model=SignedUrl,
     status_code=http_status.HTTP_200_OK,
 )
 async def generate(
@@ -79,16 +90,36 @@ async def generate(
     background_tasks: BackgroundTasks,
     current_user: str = Depends(get_current_user),  # for authentication purposes
 ):
-    out_img = await service.process_input(data.prompt)
-    img_to_send = Image.fromarray((out_img * 255).astype("uint8"))
-    with io.BytesIO() as buffer:
-        img_bytes = img_to_send.save(buffer, format="JPEG")
-        img_bytes = buffer.getvalue()
+    """Generate an image from a prompt or an image url, or both."""
+    image = None
+    if data.image:
+        img_bytes = await download_image(data.image)
+        image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
 
-    if settings.using_s3:
-        background_tasks.add_task(upload_image, img_bytes, data)
+    if data.prompt and image:
+        res = await service.process_input(prompt=data.prompt, image=image)
+    elif data.prompt:
+        res = await service.process_input(prompt=data.prompt)
+    elif image:
+        res = await service.process_input(image=image)
+    else:
+        raise HTTPException(status_code=400, detail="Please provide a prompt or an image URL.")
 
-    return Response(content=img_bytes, media_type="image/jpeg")
+    if isinstance(res, ValueError):
+        return Response(content=res.args[0], media_type="text/plain")
+
+    elif isinstance(res, Image.Image):
+        with io.BytesIO() as buffer:
+            res.save(buffer, format="PNG")
+            img_bytes = buffer.getvalue()
+
+        if settings.using_s3:
+            background_tasks.add_task(upload_image, img_bytes.getvalue())
+
+        return Response(content=img_bytes, media_type="image/png")
+
+    else:
+        raise ValueError(f"Unknown type {type(res)}")
 
 
 @app.post(
@@ -117,4 +148,4 @@ async def authentication(
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=7681, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=7680, reload=True)
