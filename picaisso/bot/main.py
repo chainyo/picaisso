@@ -4,6 +4,7 @@ import asyncio
 import io
 import json
 import os
+from collections import OrderedDict
 from typing import Optional
 
 import discord
@@ -12,6 +13,16 @@ from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from loguru import logger
+
+
+IMPLEMENTED_TASKS = OrderedDict(
+    [
+        ("image_to_image", False),
+        ("image_variation", False),
+        ("super_resolution", False),
+        ("text_to_image", True),
+    ]
+)
 
 
 class OpenjourneyBot(discord.Client):
@@ -65,6 +76,15 @@ class OpenjourneyBot(discord.Client):
                 }
             )
 
+    async def _get_api_task(self) -> str:
+        """Get the task of the loaded pipeline for the API."""
+        async with self.web_client.get(
+            f"{os.getenv('API_URL')}/task",
+            headers=self.web_client.headers,
+        ) as response:
+            data = await response.json()
+            return data["task"]
+
     async def setup_hook(self) -> None:
         """Setup the bot at startup."""
         await self._authenticate()
@@ -83,6 +103,11 @@ class OpenjourneyBot(discord.Client):
             Exception: If something went wrong while generating art.
         """
         try:
+            # Check if the task is implemented for the bot
+            api_task = await self._get_api_task()
+            if not IMPLEMENTED_TASKS[api_task]:
+                raise Exception(f"Task {api_task} is not implemented for the bot")
+            
             async with self.web_client.post(
                 f"{os.getenv('API_URL')}/generate",
                 headers=self.web_client.headers,

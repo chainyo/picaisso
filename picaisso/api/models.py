@@ -30,6 +30,20 @@ class Image(BaseModel):
     content: bytes
 
 
+class StatusTask(BaseModel):
+    """StatusTask model"""
+
+    task: str
+    class Config:
+        """StatusTask model config"""
+
+        schema_extra = {
+            "example": {
+                "task": "text_to_image",
+            }
+        }
+
+
 class Token(BaseModel):
     """Token model"""
 

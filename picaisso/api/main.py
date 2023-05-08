@@ -10,7 +10,7 @@ from fastapi import status as http_status
 from fastapi.responses import HTMLResponse, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from loguru import logger
-from models import ArtCreate, Token
+from models import ArtCreate, StatusTask, Token
 from PIL import Image
 from utils import download_image, upload_image
 
@@ -67,6 +67,17 @@ async def health_check():
     </html>
     """
     return HTMLResponse(content=content, media_type="text/html")
+
+
+@app.get(
+    "/task",
+    tags=["status"],
+    response_model=StatusTask,
+    status_code=http_status.HTTP_200_OK,
+)
+async def get_task():
+    """Get the current task of the loaded pipeline."""
+    return {"task": service.task}
 
 
 @app.post(
@@ -137,4 +148,4 @@ async def authentication(
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=7681, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=7680, reload=True)
