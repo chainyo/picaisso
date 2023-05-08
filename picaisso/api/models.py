@@ -34,6 +34,7 @@ class StatusTask(BaseModel):
     """StatusTask model"""
 
     task: str
+
     class Config:
         """StatusTask model config"""
 

@@ -107,7 +107,7 @@ class OpenjourneyBot(discord.Client):
             api_task = await self._get_api_task()
             if not IMPLEMENTED_TASKS[api_task]:
                 raise Exception(f"Task {api_task} is not implemented for the bot")
-            
+
             async with self.web_client.post(
                 f"{os.getenv('API_URL')}/generate",
                 headers=self.web_client.headers,
