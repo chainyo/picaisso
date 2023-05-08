@@ -2,7 +2,6 @@
 
 import asyncio
 import io
-import numpy as np
 
 from auto_service import AutoService
 from dependencies import authenticate_user, get_current_user
@@ -97,16 +96,19 @@ async def generate(
 
     if isinstance(res, ValueError):
         return Response(content=res.args[0], media_type="text/plain")
-    elif isinstance(res, np.ndarray):
-        img_to_send = Image.fromarray((res * 255).astype("uint8"))
+
+    elif isinstance(res, Image.Image):
         with io.BytesIO() as buffer:
-            img_bytes = img_to_send.save(buffer, format="JPEG")
+            res.save(buffer, format="PNG")
             img_bytes = buffer.getvalue()
 
         if settings.using_s3:
-            background_tasks.add_task(upload_image, img_bytes, data)
+            background_tasks.add_task(upload_image, img_bytes.getvalue())
 
-        return Response(content=img_bytes, media_type="image/jpeg")
+        return Response(content=img_bytes, media_type="image/png")
+
+    else:
+        raise ValueError(f"Unknown type {type(res)}")
 
 
 @app.post(

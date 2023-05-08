@@ -22,6 +22,7 @@ DTYPE_MAPPING = {"fp32": torch.float32, "fp16": torch.float16, "bf16": torch.bfl
 TASK_MAPPING = OrderedDict(
     [
         ("image_to_image", "StableDiffusionImg2ImgPipeline"),
+        ("image_variation", "StableDiffusionImageVariationPipeline"),
         ("super_resolution", "StableDiffusionUpscalePipeline"),
         ("text_to_image", "StableDiffusionPipeline"),
     ]
@@ -30,6 +31,7 @@ TASK_MAPPING = OrderedDict(
 TASK_INPUT_MAPPING = OrderedDict(
     [
         ("image_to_image", ("image", "prompt")),
+        ("image_variation", ("image",)),
         ("super_resolution", ("image", "prompt")),
         ("text_to_image", ("prompt",)),
     ]
@@ -37,6 +39,7 @@ TASK_INPUT_MAPPING = OrderedDict(
 TASK_DEFAULT_MODEL = OrderedDict(
     [
         ("image_to_image", "stabilityai/stable-diffusion-2-1-base"),
+        ("image_variation", "lambdalabs/sd-image-variations-diffusers"),
         ("super_resolution", "stabilityai/stable-diffusion-x4-upscaler"),
         ("text_to_image", "stabilityai/stable-diffusion-2-1-base")
     ]
@@ -113,11 +116,12 @@ class AutoService:
 
         try:
             pipeline = getattr(diffusers_module, TASK_MAPPING[self.task]).from_pretrained(
-                self.model, torch_dtype=self.dtype
+                self.model, torch_dtype=self.dtype,
             )
+
         except ValueError as e:
             if "Pipeline" in str(e):
-                logger.debug(
+                logger.warning(
                     f"The model {self.model} is not compatible with the task {self.task}. "
                     f"Using the default model {TASK_DEFAULT_MODEL[self.task]} instead."
                 )
@@ -137,7 +141,7 @@ class AutoService:
 
     async def process_input(
         self, prompt: Optional[str] = None, image: Optional[Image.Image] = None
-    ) -> np.ndarray:
+    ) -> Image.Image:
         """Process the input and wait for the result before returning.
 
         Args:
@@ -145,7 +149,7 @@ class AutoService:
             image (Optional[Image.Image], optional): The image to use. Defaults to None.
 
         Returns:
-            np.ndarray: The result of the processing, as a numpy array.
+            Image.Image: The processed image as a PIL Image.
         """
         our_task = {
             "done_event": asyncio.Event(),
@@ -162,9 +166,11 @@ class AutoService:
                 our_task["image"] = image
 
         if not all([k in our_task for k in self.input_names]):
-            logger.debug(f"Missing inputs for task {self.task}: {self.input_names}")
+            logger.error(f"Missing inputs for task {self.task}: {self.input_names}")
+
             missing_inputs = [k for k in self.input_names if k not in our_task]
             our_task["done_event"].set()
+
             return ValueError(f"Missing inputs for task {self.task}: {missing_inputs}")
 
         async with self.queue_lock:
@@ -210,7 +216,7 @@ class AutoService:
             except Exception as e:
                 logger.error(e)
 
-    def inference(self, n_samples: int = 1, **kwargs) -> np.ndarray:
+    def inference(self, n_samples: int = 1, **kwargs) -> Image.Image:
         """
         Inference on the given inputs.
 
@@ -219,12 +225,11 @@ class AutoService:
             **kwargs: The inputs to the task. Must match the task input names. Can be a batch.
 
         Returns:
-            np.ndarray: The result of the batched inference.
+            Image.Image: The generated image as a PIL image.
         """
         with autocast("cuda"):
             return self.pipeline(
                 **kwargs,
                 num_images_per_prompt=n_samples,
                 num_inference_steps=self.n_steps,
-                output_type="numpy",
             )
