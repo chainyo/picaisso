@@ -3,7 +3,6 @@
 import asyncio
 import io
 
-from config import settings
 from dependencies import authenticate_user, get_current_user
 from diffusion_service import DiffusionService
 from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException
@@ -15,6 +14,7 @@ from models import ArtCreate, Token
 from PIL import Image
 from utils import download_image, upload_image
 
+from config import settings
 
 
 app = FastAPI(

@@ -10,7 +10,6 @@ from pydantic import Field, validator
 from pydantic.dataclasses import dataclass
 
 
-
 @dataclass
 class Settings:
     # General Configuration

@@ -3,14 +3,13 @@
 import asyncio
 import functools
 from collections import OrderedDict
-from PIL import Image
-from typing import Optional, Union
+from typing import Optional
 
-import numpy as np
 import tomesd
 import torch
 from diffusers.pipelines import DiffusionPipeline
 from loguru import logger
+from PIL import Image
 from torch import autocast
 
 
@@ -41,7 +40,7 @@ TASK_DEFAULT_MODEL = OrderedDict(
         ("image_to_image", "stabilityai/stable-diffusion-2-1-base"),
         ("image_variation", "lambdalabs/sd-image-variations-diffusers"),
         ("super_resolution", "stabilityai/stable-diffusion-x4-upscaler"),
-        ("text_to_image", "stabilityai/stable-diffusion-2-1-base")
+        ("text_to_image", "stabilityai/stable-diffusion-2-1-base"),
     ]
 )
 
@@ -116,7 +115,8 @@ class DiffusionService:
 
         try:
             pipeline = getattr(diffusers_module, TASK_MAPPING[self.task]).from_pretrained(
-                self.model, torch_dtype=self.dtype,
+                self.model,
+                torch_dtype=self.dtype,
             )
 
         except ValueError as e:
@@ -139,9 +139,7 @@ class DiffusionService:
                 self.queue[0]["time"] + self.max_wait, self.needs_processing.set
             )
 
-    async def process_input(
-        self, prompt: Optional[str] = None, image: Optional[Image.Image] = None
-    ) -> Image.Image:
+    async def process_input(self, prompt: Optional[str] = None, image: Optional[Image.Image] = None) -> Image.Image:
         """Process the input and wait for the result before returning.
 
         Args:
