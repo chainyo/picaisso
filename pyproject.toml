@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "PicAIsso"
-version = "1.0.2"
+version = "1.2.0"
 description = "🎨 Imagine what Picasso could have done with AI. Self-host your StableDiffusion API."
 authors = ["Thomas Chaigneau <t.chaigneau.tc@gmail.com>"]
 license = "Apache-2.0"
